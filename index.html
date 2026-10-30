@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estação Meteorológica Inteligente - Cidades Inteligentes</title>
+    <!-- Tailwind CSS para estilização rápida e moderna -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- Cabeçalho -->
+    <header class="bg-slate-800 border-b border-slate-700 p-6 shadow-md">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wide text-emerald-400">🌤️ Estação Meteorológica Urbana</h1>
+            <span class="text-xs bg-emerald-900/50 text-emerald-300 border border-emerald-600 px-3 py-1 rounded-full">Sistema Ativo (Online)</span>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-5xl mx-auto p-6 w-full grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+        
+        <!-- Card de Temperatura -->
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+            <div class="flex justify-between items-center text-slate-400">
+                <span class="text-sm font-medium uppercase tracking-wider">Temperatura Atual</span>
+                <span class="text-2xl">🌡️</span>
+            </div>
+            <div class="my-6">
+                <span id="valor-temp" class="text-5xl font-extrabold text-white">--</span>
+                <span class="text-2xl font-bold text-slate-400">°C</span>
+            </div>
+            <p class="text-xs text-slate-400">Atualizado em tempo real via ESP32 / IoT</p>
+        </div>
+
+        <!-- Card de Humidade -->
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+            <div class="flex justify-between items-center text-slate-400">
+                <span class="text-sm font-medium uppercase tracking-wider">Humidade Relativa</span>
+                <span class="text-2xl">💧</span>
+            </div>
+            <div class="my-6">
+                <span id="valor-hum" class="text-5xl font-extrabold text-white">--</span>
+                <span class="text-2xl font-bold text-slate-400">%</span>
+            </div>
+            <p class="text-xs text-slate-400">Monitorização ambiental urbana</p>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-slate-800 border-t border-slate-700 p-4 text-center text-xs text-slate-400">
+        <p>Projeto e Desenvolvimento II (PD-II) — Ciência da Computação</p>
+    </footer>
+
+    <!-- Script de Simulação / Conexão -->
+    <script>
+        async function atualizarDados() {
+            try {
+                // Faz o pedido GET à API Python que está a correr localmente
+                const resposta = await fetch('http://127.0.0.1:8000/api/dados');
+                const dados = await resposta.json();
+
+                // Atualiza os elementos HTML com os valores reais
+                document.getElementById('valor-temp').innerText = dados.temperatura.toFixed(1);
+                document.getElementById('valor-hum').innerText = dados.humidade.toFixed(1);
+            } catch (erro) {
+                console.error("Erro ao ligar à API da estação:", erro);
+            }
+        }
+
+        // Atualiza a cada 3 segundos
+        setInterval(atualizarDados, 3000);
+        atualizarDados();
+    </script>
+</body>
+</html>
